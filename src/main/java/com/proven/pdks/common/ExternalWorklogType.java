@@ -1,0 +1,24 @@
+package com.proven.pdks.common;
+
+public enum ExternalWorklogType {
+    OTHER(0), HYBRID(1), ASELSAN(2);
+
+    private final int value;
+
+    ExternalWorklogType(int value) {
+        this.value = value;
+    }
+
+    public int getValue() {
+        return value;
+    }
+
+    public static ExternalWorklogType fromValue(int value) {
+        return switch (value) {
+            case 0 -> OTHER;
+            case 1 -> HYBRID;
+            case 2 -> ASELSAN;
+            default -> throw new IllegalArgumentException("Unknown value: " + value);
+        };
+    }
+}

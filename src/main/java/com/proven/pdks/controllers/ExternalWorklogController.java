@@ -1,0 +1,68 @@
+package com.proven.pdks.controllers;
+
+import com.proven.pdks.entities.ExternalWorklog;
+import com.proven.pdks.entities.User;
+import com.proven.pdks.services.ExternalWorklogService;
+import com.proven.pdks.services.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+@RestController
+@RequestMapping("/api/externalWorklogs")
+public class ExternalWorklogController {
+
+    private final ExternalWorklogService externalWorklogService;
+    private final UserService userService;
+
+    @Autowired
+    public ExternalWorklogController(ExternalWorklogService externalWorklogService, UserService userService) {
+        this.externalWorklogService = externalWorklogService;
+        this.userService = userService;
+    }
+
+    @PostMapping("/create")
+    @PreAuthorize("hasAnyAuthority('ADMIN','USER')")
+    public void create(@RequestBody ExternalWorklog externalWorklog) {
+        String username = ((UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername();
+        User currentUser = userService.findByTCKN(username);
+        externalWorklog.setUser(currentUser);
+        externalWorklogService.createWorklog(externalWorklog);
+    }
+
+    @GetMapping
+    @PreAuthorize("hasAnyAuthority('ADMIN','USER')")
+    public List<ExternalWorklog> getExternalWorklogs() {
+        String username = ((UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername();
+        return externalWorklogService.getWorklogs(username);
+    }
+
+
+    @PutMapping("/{id}")
+    @PreAuthorize("hasAuthority('ADMIN')")
+    public ExternalWorklog updateWorklog(@PathVariable Long id, @RequestBody ExternalWorklog worklogDetails) {
+        return externalWorklogService.updateWorklog(id, worklogDetails);
+    }
+
+    @DeleteMapping("/{id}")
+    @PreAuthorize("hasAuthority('ADMIN')")
+    public void deleteWorklog(@PathVariable Long id) {
+        externalWorklogService.deleteWorklog(id);
+    }
+
+    @PatchMapping("/approve/{id}")
+    @PreAuthorize("hasAuthority('ADMIN')")
+    public ExternalWorklog approveWorklog(@PathVariable Long id) {
+        return externalWorklogService.approveWorklog(id);
+    }
+
+    @GetMapping("/pending")
+    @PreAuthorize("hasAuthority('ADMIN')")
+    public List<ExternalWorklog> getAllPendingWorklogs() {
+        return externalWorklogService.getAllPendingWorklogs();
+    }
+}
