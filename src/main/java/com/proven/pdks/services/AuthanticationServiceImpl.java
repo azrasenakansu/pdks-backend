@@ -32,6 +32,8 @@ public class AuthanticationServiceImpl implements AuthanticationService {
         response.setAuthenticated(true);
         response.setTckn(user.getTckn());
         response.setToken(jwtService.GenerateToken(user.getTckn()));
+        response.setRole(user.getRole());
+        response.setFullName(user.getName());
         return response;
     }
 
