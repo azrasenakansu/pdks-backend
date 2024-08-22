@@ -41,16 +41,11 @@ public class ImportController {
             pdksImportService.importPDKS(rows);
             return ResponseEntity.ok().build();
         }
-        catch (Exception e){
+        catch (Exception e) {
             return ResponseEntity.internalServerError().build();
         }
     }
 
-    @GetMapping("/processExcel")
-    public String processExcel() {
-        //  pkdsExcelParser.readExcelFile();
-//        pdksParser.isFileSupported(".jpg");
-        return "";
-    }
+
 
 }
