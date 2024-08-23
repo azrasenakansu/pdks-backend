@@ -12,6 +12,7 @@ import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @Service
 public class PDKSImportService {
@@ -26,6 +27,10 @@ public class PDKSImportService {
     }
 
     public void importPDKS(List<SimpleRows> rows) {
+        LocalDate lastImportDate = worklogRepository.findTopByOrderByDateDesc().map(Worklog::getDate).orElse(null);
+        LocalDate now = LocalDate.now();
+        rows = rows.stream().filter(row -> row.getDate().isBefore(now) && (lastImportDate == null || row.getDate().isAfter(lastImportDate))).toList();
+
         Map<String, Map<LocalDate, Worklog>> result = new HashMap<>();
 
         for (SimpleRows row : rows) {

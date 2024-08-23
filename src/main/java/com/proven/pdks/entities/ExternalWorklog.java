@@ -1,5 +1,6 @@
 package com.proven.pdks.entities;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.proven.pdks.common.ExternalWorklogType;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -28,9 +29,11 @@ public class ExternalWorklog {
     private LocalDate date;
 
     @Column(name = "start_time")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern="HH:mm")
     private LocalTime from;
 
     @Column(name = "end_time")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern="HH:mm")
     private LocalTime to;
 
     @Column(name = "is_approved")
