@@ -11,6 +11,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/externalWorklogs")
@@ -54,10 +55,11 @@ public class ExternalWorklogController {
         externalWorklogService.deleteWorklog(id);
     }
 
-    @PatchMapping("/approve/{id}")
+    @PatchMapping("/approve/{id}/{state}")
     @PreAuthorize("hasAuthority('ADMIN')")
-    public ExternalWorklog approveWorklog(@PathVariable Long id) {
-        return externalWorklogService.approveWorklog(id);
+    public ExternalWorklog approveWorklog(@PathVariable Long id, @PathVariable Integer state) {
+        Optional<Boolean> approveState = state == 0 ? Optional.of(false) : state == 1 ? Optional.of(true) : Optional.empty();
+        return externalWorklogService.approveWorklog(id, approveState);
     }
 
     @GetMapping("/pending")

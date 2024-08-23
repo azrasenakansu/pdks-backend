@@ -62,11 +62,11 @@ public class ExternalWorklogServiceImpl implements ExternalWorklogService {
         }
     }
 
-    public ExternalWorklog approveWorklog(Long id) {
+    public ExternalWorklog approveWorklog(Long id, Optional<Boolean> state) {
         Optional<ExternalWorklog> worklogOptional = externalWorklogRepository.findById(id);
         if (worklogOptional.isPresent()) {
             ExternalWorklog worklog = worklogOptional.get();
-            worklog.setIsApproved(!worklog.getIsApproved());
+            worklog.setIsApproved(state.orElse(null));
             return externalWorklogRepository.save(worklog);
         } else {
             throw new RuntimeException("Worklog not found with ID: " + id);

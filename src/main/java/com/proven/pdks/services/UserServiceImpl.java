@@ -33,8 +33,11 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User saveUser(User user) {
-        user.setPassword(passwordEncoder.encode(user.getTckn()));
-        return userRepository.saveAndFlush(user);
+        if (!userRepository.existsById(user.getTckn())) {
+            user.setPassword(passwordEncoder.encode(user.getTckn()));
+            return userRepository.saveAndFlush(user);
+        }
+        throw new ResourceNotFoundException("Bu TC Kimlik Numarasına sahip bir kullanıcı var: " + user.getTckn());
     }
 
     @Override
