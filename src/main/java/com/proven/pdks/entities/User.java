@@ -1,5 +1,6 @@
 package com.proven.pdks.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -17,6 +18,7 @@ import java.util.Set;
 @AllArgsConstructor
 @Table(name = "users")
 @Builder
+@JsonIgnoreProperties({"authorities","password","username","enabled","accountNonExpired","credentialsNonExpired","accountNonLocked"})
 public class User implements UserDetails {
     @Id
     @Column(name = "tckn")

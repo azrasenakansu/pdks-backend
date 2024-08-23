@@ -34,7 +34,7 @@ public class ExternalWorklog {
     private LocalTime to;
 
     @Column(name = "is_approved")
-    private Boolean isApproved; // Default to false
+    private Boolean isApproved;
 
     @Enumerated(EnumType.ORDINAL)
     private ExternalWorklogType type;
