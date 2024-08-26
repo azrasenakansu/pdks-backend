@@ -20,5 +20,8 @@ public interface ExternalWorklogService {
 
     List<ExternalWorklog> getAllPendingWorklogs();
 
+    List<ExternalWorklog> getAllRejectedWorklogs();
+
+    List<ExternalWorklog> getAllApprovedWorklogs();
 }
 

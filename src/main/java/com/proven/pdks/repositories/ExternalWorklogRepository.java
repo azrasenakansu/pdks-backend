@@ -7,5 +7,11 @@ import java.util.List;
 
 public interface ExternalWorklogRepository extends JpaRepository<ExternalWorklog, Long> {
     List<ExternalWorklog> findByIsApprovedNull();
+
     List<ExternalWorklog> findByUser_Tckn(String tckn);
+
+    List<ExternalWorklog> findByIsApprovedFalse();
+
+    List<ExternalWorklog> findByIsApprovedTrue();
+
 }

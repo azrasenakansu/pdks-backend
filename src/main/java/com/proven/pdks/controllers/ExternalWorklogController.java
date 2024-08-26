@@ -67,4 +67,16 @@ public class ExternalWorklogController {
     public List<ExternalWorklog> getAllPendingWorklogs() {
         return externalWorklogService.getAllPendingWorklogs();
     }
+
+    @GetMapping("/rejected")
+    @PreAuthorize("hasAuthority('ADMIN')")
+    public List<ExternalWorklog> getAllRejectedWorklogs() {
+        return externalWorklogService.getAllRejectedWorklogs();
+    }
+
+    @GetMapping("/approved")
+    @PreAuthorize("hasAuthority('ADMIN')")
+    public List<ExternalWorklog> getAllApprovedWorklogs() {
+        return externalWorklogService.getAllApprovedWorklogs();
+    }
 }

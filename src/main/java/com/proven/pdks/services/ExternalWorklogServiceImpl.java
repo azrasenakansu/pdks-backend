@@ -77,5 +77,12 @@ public class ExternalWorklogServiceImpl implements ExternalWorklogService {
         return externalWorklogRepository.findByIsApprovedNull();
     }
 
+    public List<ExternalWorklog> getAllRejectedWorklogs() {
+        return externalWorklogRepository.findByIsApprovedFalse();
+    }
+
+    public List<ExternalWorklog> getAllApprovedWorklogs() {
+        return externalWorklogRepository.findByIsApprovedTrue();
+    }
 
 }
