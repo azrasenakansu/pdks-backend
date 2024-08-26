@@ -1,5 +1,7 @@
 package com.proven.pdks.common;
 
+import com.fasterxml.jackson.annotation.JsonValue;
+
 public enum ExternalWorklogType {
     OTHER(0), HYBRID(1), ASELSAN(2);
 
@@ -9,6 +11,7 @@ public enum ExternalWorklogType {
         this.value = value;
     }
 
+    @JsonValue
     public int getValue() {
         return value;
     }
