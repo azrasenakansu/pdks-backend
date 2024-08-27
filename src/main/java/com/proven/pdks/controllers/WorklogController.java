@@ -1,6 +1,6 @@
 package com.proven.pdks.controllers;
 
-import com.proven.pdks.entities.ExternalWorklog;
+import com.proven.pdks.dtos.WorklogReportDTO;
 import com.proven.pdks.entities.Worklog;
 import com.proven.pdks.services.WorklogService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +9,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -19,13 +21,26 @@ public class WorklogController {
 
     @GetMapping()
     public List<Worklog> getWorklogs() {
-        return worklogService.getWorklogs(((UserDetails)SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername());
+        return worklogService.getWorklogs(((UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername());
     }
 
     @GetMapping("/{tckn}")
     @PreAuthorize("hasAuthority('ADMIN')")
     public List<Worklog> getWorklog(@PathVariable String tckn) {
         return worklogService.getWorklogs(tckn);
+    }
+
+    @GetMapping("/report")
+    public List<WorklogReportDTO> getWorklogReportByTckn(@RequestParam LocalDate startDate,
+                                                         @RequestParam LocalDate endDate,@RequestParam(required = false) List<String> tckns) {
+        if(tckns == null){
+            tckns = new ArrayList<>();
+        }
+        boolean isAdmin = SecurityContextHolder.getContext().getAuthentication().getAuthorities().stream().anyMatch(q -> q.getAuthority().equals("ADMIN"));
+        if(!isAdmin){
+            tckns = List.of(((UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername());
+        }
+        return worklogService.getReport(startDate,endDate,tckns);
     }
 
 }
