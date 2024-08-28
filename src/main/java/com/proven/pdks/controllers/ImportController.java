@@ -7,6 +7,7 @@ import com.proven.pdks.services.FileService;
 import com.proven.pdks.services.PDKSImportService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -27,6 +28,7 @@ public class ImportController {
     @Autowired
     private PDKSImportService pdksImportService;
 
+    @PreAuthorize("hasAuthority('ADMIN')")
     @PostMapping()
     public ResponseEntity<Void> uploadFile(@RequestParam(name = "file") MultipartFile file){
         Path path = fileService.upload(file);

@@ -37,15 +37,26 @@ public class PDKSExcelParser implements PDKSParser {
 
         for (int i = 6; i < sheet.getLastRowNum() + 1; i++) {
             Row row = sheet.getRow(i);
-
-            Long id = (long) row.getCell(0).getNumericCellValue();
-            Long sicil = (long) row.getCell(1).getNumericCellValue();
-            String name = row.getCell(2).getStringCellValue();
-
+            if (row == null) {
+                continue;
+            }
+            Cell idCell = row.getCell(0);
+            Cell sicilCell = row.getCell(1);
+            Cell nameCell = row.getCell(2);
             Cell dateCell = row.getCell(3);
             Cell timeCell = row.getCell(4);
-            String status = row.getCell(5).getStringCellValue();
-            String source = row.getCell(6).getStringCellValue();
+            Cell statusCell = row.getCell(5);
+            Cell sourceCell = row.getCell(6);
+            if (idCell == null || sicilCell == null || nameCell == null ||
+                    dateCell == null || timeCell == null || statusCell == null || sourceCell == null) {
+                continue;
+            }
+            String status = statusCell.getStringCellValue();
+            String source = sourceCell.getStringCellValue();
+
+            Long id = (long) idCell.getNumericCellValue();
+            Long sicil = (long) sicilCell.getNumericCellValue();
+            String name = nameCell.getStringCellValue();
 
             LocalDate localDate;
             LocalTime localTime;
