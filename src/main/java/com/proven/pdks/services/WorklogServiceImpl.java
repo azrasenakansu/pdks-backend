@@ -28,6 +28,10 @@ public class WorklogServiceImpl implements WorklogService {
 
     @Override
     public List<WorklogReportDTO> getReport(LocalDate startDate, LocalDate endDate, List<String> tckns) {
-        return reportRepository.getReport(startDate, endDate, tckns);
+        List<WorklogReportDTO> reports =reportRepository.getReport(startDate, endDate, tckns);
+        for (WorklogReportDTO reportDTO:reports){
+            reportDTO.getTotal_time();
+        }
+        return reports;
     }
 }
