@@ -2,13 +2,16 @@ package com.proven.pdks.controllers;
 
 import com.proven.pdks.dtos.WorklogReportDTO;
 import com.proven.pdks.entities.Worklog;
+import com.proven.pdks.services.PDKSExportService;
 import com.proven.pdks.services.WorklogService;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -18,6 +21,8 @@ import java.util.List;
 public class WorklogController {
     @Autowired
     private WorklogService worklogService;
+    @Autowired
+    private PDKSExportService excelExportService;
 
     @GetMapping()
     public List<Worklog> getWorklogs() {
@@ -42,5 +47,13 @@ public class WorklogController {
         }
         return worklogService.getReport(startDate,endDate,tckns);
     }
-
+    @PreAuthorize("hasAuthority('ADMIN')")
+    @GetMapping("/report/export")
+    public void exportWorklogReport(@RequestParam LocalDate startDate,
+                                    @RequestParam LocalDate endDate,
+                                    @RequestParam(required = false) List<String> tckns,
+                                    HttpServletResponse response) throws IOException {
+        List<WorklogReportDTO> reports = worklogService.getReport(startDate, endDate, tckns);
+        excelExportService.exportWorklogReport(reports, response);
+    }
 }
