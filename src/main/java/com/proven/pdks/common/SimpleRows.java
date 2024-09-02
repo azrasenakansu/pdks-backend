@@ -12,7 +12,7 @@ import java.time.LocalTime;
 @Data
 public class SimpleRows {
     private String tckn;
-    private Long sicil;
+    private String sicil;
     private String name;
     private LocalDate date;
     private LocalTime time;

@@ -54,8 +54,8 @@ public class PDKSExcelParser implements PDKSParser {
             String status = statusCell.getStringCellValue();
             String source = sourceCell.getStringCellValue();
 
-            Long id = (long) idCell.getNumericCellValue();
-            Long sicil = (long) sicilCell.getNumericCellValue();
+            String id = idCell.getStringCellValue();
+            String sicil = sicilCell.getStringCellValue();
             String name = nameCell.getStringCellValue();
 
             LocalDate localDate;
