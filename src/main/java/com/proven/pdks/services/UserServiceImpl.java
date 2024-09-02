@@ -1,8 +1,7 @@
 package com.proven.pdks.services;
 
 import com.proven.pdks.entities.User;
-import com.proven.pdks.exceptionHandling.ResourceNotFoundException;
-import com.proven.pdks.repositories.RoleRepository;
+import com.proven.pdks.exceptionHandling.WillfullException;
 import com.proven.pdks.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -11,21 +10,18 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @Service
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
-    private final RoleRepository roleRepository;
 
 
     @Autowired
-    public UserServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder, RoleRepository roleRepository) {
+    public UserServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
-        this.roleRepository = roleRepository;
     }
 
     @Override
@@ -34,14 +30,14 @@ public class UserServiceImpl implements UserService {
             user.setPassword(passwordEncoder.encode(user.getTckn()));
             return userRepository.saveAndFlush(user);
         }
-        throw new ResourceNotFoundException("Bu TC Kimlik Numarasına sahip bir kullanıcı var: " + user.getTckn());
+        throw new WillfullException("Bu TC Kimlik Numarasına sahip bir kullanıcı var: " + user.getTckn());
     }
 
     @Override
     public User findByTCKN(String tckn) {
         User user = userRepository.findByTckn(tckn);
         if (user == null) {
-            throw new ResourceNotFoundException("User not found with TCKN: " + tckn);
+            throw new WillfullException("User not found with TCKN: " + tckn);
         }
         return user;
     }
@@ -60,11 +56,11 @@ public class UserServiceImpl implements UserService {
     public User updateUser(String tckn, User userDetails) {
         Optional<User> userOptional = userRepository.findById(tckn);
         if (userOptional.isEmpty()) {
-            throw new ResourceNotFoundException("User not found with TCKN: " + tckn);
+            throw new WillfullException("User not found with TCKN: " + tckn);
         }
         User user = userOptional.get();
         if (user.getTckn().equals("admin")) {
-            throw new IllegalArgumentException("Bu admin hesabını değiştiremezsiniz.");
+            throw new WillfullException("Bu admin hesabını değiştiremezsiniz.");
         }
         user.setName(userDetails.getName());
         user.setRole(userDetails.getRole());
@@ -82,13 +78,13 @@ public class UserServiceImpl implements UserService {
             String currentTckn = currentUserDetails.getUsername();
 
             if (userToDelete.getTckn().equals(currentTckn)) {
-                throw new IllegalArgumentException("Kendi hesabınızı silemezsiniz.");
+                throw new WillfullException("Kendi hesabınızı silemezsiniz.");
             } else if (userToDelete.getTckn().equals("admin")) {
-                throw new IllegalArgumentException("Bu admin hesabını silemezsiniz.");
+                throw new WillfullException("Bu admin hesabını silemezsiniz.");
             }
             userRepository.delete(userToDelete);
         } else {
-            throw new NoSuchElementException("User with TCKN " + tckn + " not found.");
+            throw new WillfullException("User with TCKN " + tckn + " not found.");
         }
 
     }

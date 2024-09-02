@@ -3,14 +3,11 @@ package com.proven.pdks.services;
 import com.proven.pdks.dtos.LoginDto;
 import com.proven.pdks.dtos.LoginResponseDto;
 import com.proven.pdks.entities.User;
+import com.proven.pdks.exceptionHandling.WillfullException;
 import com.proven.pdks.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
-import java.util.Optional;
 
 
 @Service
@@ -43,11 +40,11 @@ public class AuthanticationServiceImpl implements AuthanticationService {
         User user = userRepository.findByTckn(tckn);
         if (user != null) {
             if (user.getTckn().equals("admin")) {
-                throw new IllegalArgumentException("Bu admin hesabının şifresini silemezsiniz.");
+                throw new WillfullException("Bu admin hesabının şifresini silemezsiniz.");
             }
         }
         if (user == null) {
-            throw new RuntimeException("User not found with TCKN: " + tckn);
+            throw new WillfullException("User not found with TCKN: " + tckn);
         }
         user.setPassword(passwordEncoder.encode(tckn));
         userRepository.save(user);
@@ -58,11 +55,11 @@ public class AuthanticationServiceImpl implements AuthanticationService {
         User user = userRepository.findByTckn(username);
         if (user != null) {
             if (user.getTckn().equals("admin")) {
-                throw new IllegalArgumentException("Bu admin hesabının şifresini değiştiremezsiniz.");
+                throw new WillfullException("Bu admin hesabının şifresini değiştiremezsiniz.");
             }
         }
         if (user == null || !passwordEncoder.matches(currentPassword, user.getPassword())) {
-            throw new RuntimeException("Current password is incorrect.");
+            throw new WillfullException("Current password is incorrect.");
         }
         user.setPassword(passwordEncoder.encode(newPassword));
         userRepository.save(user);

@@ -1,6 +1,7 @@
 package com.proven.pdks.common;
 
 import com.fasterxml.jackson.annotation.JsonValue;
+import com.proven.pdks.exceptionHandling.WillfullException;
 
 public enum ExternalWorklogType {
     OTHER(0), HYBRID(1), ASELSAN(2);
@@ -21,7 +22,7 @@ public enum ExternalWorklogType {
             case 0 -> OTHER;
             case 1 -> HYBRID;
             case 2 -> ASELSAN;
-            default -> throw new IllegalArgumentException("Unknown value: " + value);
+            default -> throw new WillfullException("Unknown value: " + value);
         };
     }
 }

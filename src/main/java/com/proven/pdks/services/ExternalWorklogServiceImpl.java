@@ -1,6 +1,7 @@
 package com.proven.pdks.services;
 
 import com.proven.pdks.entities.ExternalWorklog;
+import com.proven.pdks.exceptionHandling.WillfullException;
 import com.proven.pdks.repositories.ExternalWorklogRepository;
 import com.proven.pdks.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,7 +37,7 @@ public class ExternalWorklogServiceImpl implements ExternalWorklogService {
         boolean isAdmin = SecurityContextHolder.getContext().getAuthentication().getAuthorities().stream().anyMatch(authority -> "ADMIN".equals(authority.getAuthority()));
         Optional<ExternalWorklog> worklogOptional = externalWorklogRepository.findById(id);
         if (worklogOptional.isEmpty()) {
-            throw new RuntimeException("Worklog not found with ID: " + id);
+            throw new WillfullException("Worklog not found with ID: " + id);
         }
         ExternalWorklog worklog = worklogOptional.get();
         if (worklog.getIsApproved() == null || isAdmin) {
@@ -53,7 +54,7 @@ public class ExternalWorklogServiceImpl implements ExternalWorklogService {
         boolean isAdmin = SecurityContextHolder.getContext().getAuthentication().getAuthorities().stream().anyMatch(authority -> "ADMIN".equals(authority.getAuthority()));
         Optional<ExternalWorklog> worklogOptional = externalWorklogRepository.findById(id);
         if (worklogOptional.isEmpty()) {
-            throw new RuntimeException("Worklog not found with ID: " + id);
+            throw new WillfullException("Worklog not found with ID: " + id);
         }
         ExternalWorklog worklog = worklogOptional.get();
         if (worklog.getIsApproved() == null || isAdmin) {
@@ -68,7 +69,7 @@ public class ExternalWorklogServiceImpl implements ExternalWorklogService {
             worklog.setIsApproved(state.orElse(null));
             return externalWorklogRepository.save(worklog);
         } else {
-            throw new RuntimeException("Worklog not found with ID: " + id);
+            throw new WillfullException("Worklog not found with ID: " + id);
         }
     }
 
