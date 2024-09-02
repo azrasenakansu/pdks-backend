@@ -34,7 +34,7 @@ public class PDKSExportService {
             row.createCell(0).setCellValue(report.getTckn());
             row.createCell(1).setCellValue(report.getName());
             row.createCell(2).setCellValue(report.getDate().format(dateFormatter));
-            row.createCell(3).setCellValue(report.getStart_time() + " - " + report.getEnd_time());
+            row.createCell(3).setCellValue((report.getStart_time() != null ? report.getStart_time() : "?") + " - " + (report.getEnd_time() != null ? report.getEnd_time() : "?"));
             LocalTime extHours = report.getExt_hours();
             if (extHours != null) {
                 String extHoursFormatted = extHours.format(DateTimeFormatter.ofPattern("HH:mm:ss"));
@@ -43,10 +43,10 @@ public class PDKSExportService {
                 row.createCell(4).setCellValue("");
             }
             row.createCell(5).setCellValue(report.getExt_descriptions());
-            if (report.getTotal_time()!=null){
+            if (report.getTotal_time() != null) {
                 String totalHours = report.getTotal_time().format(DateTimeFormatter.ofPattern("HH:mm:ss"));
                 row.createCell(6).setCellValue(totalHours);
-            }else {
+            } else {
                 row.createCell(6).setCellValue("");
             }
 
@@ -61,8 +61,7 @@ public class PDKSExportService {
             workbook.close();
             result = stream.toByteArray();
             stream.close();
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return result;

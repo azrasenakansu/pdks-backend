@@ -51,7 +51,7 @@ public class WorklogController {
         return worklogService.getReport(startDate,endDate,tckns);
     }
 
-    @PreAuthorize("hasAuthority('ADMIN')")
+    @PreAuthorize("hasAnyAuthority('ADMIN','USER')")
     @GetMapping("/report/export")
     public ResponseEntity<byte[]> exportWorklogReport(@RequestParam LocalDate startDate,
                                               @RequestParam LocalDate endDate,
@@ -59,6 +59,10 @@ public class WorklogController {
                                               ) throws IOException {
         if(tckns == null){
             tckns = new ArrayList<>();
+        }
+        boolean isAdmin = SecurityContextHolder.getContext().getAuthentication().getAuthorities().stream().anyMatch(q -> q.getAuthority().equals("ADMIN"));
+        if(!isAdmin){
+            tckns = List.of(((UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername());
         }
         List<WorklogReportDTO> reports = worklogService.getReport(startDate, endDate, tckns);
         if(reports == null || reports.isEmpty()){
