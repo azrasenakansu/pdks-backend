@@ -34,7 +34,7 @@ public class PDKSExportService {
             row.createCell(0).setCellValue(report.getTckn());
             row.createCell(1).setCellValue(report.getName());
             row.createCell(2).setCellValue(report.getDate().format(dateFormatter));
-            row.createCell(3).setCellValue((report.getStart_time() != null ? report.getStart_time() : "?") + " - " + (report.getEnd_time() != null ? report.getEnd_time() : "?"));
+            row.createCell(3).setCellValue((report.getStart_time() != null ? report.getStart_time() : "") + " - " + (report.getEnd_time() != null ? report.getEnd_time() : ""));
             LocalTime extHours = report.getExt_hours();
             if (extHours != null) {
                 String extHoursFormatted = extHours.format(DateTimeFormatter.ofPattern("HH:mm:ss"));

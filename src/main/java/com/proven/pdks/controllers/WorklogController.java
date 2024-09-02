@@ -16,6 +16,7 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/worklogs")
@@ -69,6 +70,6 @@ public class WorklogController {
             return ResponseEntity.noContent().build();
         }
         byte[] data = excelExportService.exportWorklogReport(reports);
-        return fileService.download(data, "report.xlsx");
+        return fileService.download(data, UUID.randomUUID()+".xlsx");
     }
 }

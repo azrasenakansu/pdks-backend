@@ -5,8 +5,12 @@ import com.proven.pdks.dtos.LoginResponseDto;
 import com.proven.pdks.entities.User;
 import com.proven.pdks.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 
 @Service
@@ -37,6 +41,11 @@ public class AuthanticationServiceImpl implements AuthanticationService {
     @Override
     public void resetPassword(String tckn) {
         User user = userRepository.findByTckn(tckn);
+        if (user != null) {
+            if (user.getTckn().equals("admin")) {
+                throw new IllegalArgumentException("Bu admin hesabının şifresini silemezsiniz.");
+            }
+        }
         if (user == null) {
             throw new RuntimeException("User not found with TCKN: " + tckn);
         }
@@ -47,6 +56,11 @@ public class AuthanticationServiceImpl implements AuthanticationService {
     @Override
     public void changePassword(String username, String currentPassword, String newPassword) {
         User user = userRepository.findByTckn(username);
+        if (user != null) {
+            if (user.getTckn().equals("admin")) {
+                throw new IllegalArgumentException("Bu admin hesabının şifresini değiştiremezsiniz.");
+            }
+        }
         if (user == null || !passwordEncoder.matches(currentPassword, user.getPassword())) {
             throw new RuntimeException("Current password is incorrect.");
         }
