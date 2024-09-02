@@ -1,7 +1,6 @@
 package com.proven.pdks.repositories;
 
 import com.proven.pdks.dtos.WorklogReportDTO;
-import org.apache.tomcat.util.buf.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;

@@ -1,5 +1,8 @@
 package com.proven.pdks.services;
 
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
@@ -41,5 +44,15 @@ public class FileServiceImpl implements FileService {
             System.out.println(e.getMessage());
         }
         return null;
+    }
+
+    @Override
+    public ResponseEntity<byte[]> download(byte[] data, String filename) {
+        return ResponseEntity
+                .ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename="+filename)
+                .header(HttpHeaders.ACCESS_CONTROL_EXPOSE_HEADERS, HttpHeaders.CONTENT_DISPOSITION)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(data);
     }
 }

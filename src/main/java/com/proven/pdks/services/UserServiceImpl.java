@@ -1,13 +1,10 @@
 package com.proven.pdks.services;
 
-import com.proven.pdks.entities.ExternalWorklog;
-import com.proven.pdks.entities.Role;
 import com.proven.pdks.entities.User;
 import com.proven.pdks.exceptionHandling.ResourceNotFoundException;
 import com.proven.pdks.repositories.RoleRepository;
 import com.proven.pdks.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;

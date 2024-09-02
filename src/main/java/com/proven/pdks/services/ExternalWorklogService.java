@@ -1,8 +1,6 @@
 package com.proven.pdks.services;
 
 import com.proven.pdks.entities.ExternalWorklog;
-import com.proven.pdks.entities.User;
-import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;

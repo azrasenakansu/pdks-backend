@@ -4,7 +4,6 @@ import com.proven.pdks.entities.Role;
 import com.proven.pdks.entities.User;
 import com.proven.pdks.repositories.RoleRepository;
 import com.proven.pdks.repositories.UserRepository;
-import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.context.event.EventListener;

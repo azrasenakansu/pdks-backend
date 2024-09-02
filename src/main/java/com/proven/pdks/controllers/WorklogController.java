@@ -2,10 +2,11 @@ package com.proven.pdks.controllers;
 
 import com.proven.pdks.dtos.WorklogReportDTO;
 import com.proven.pdks.entities.Worklog;
+import com.proven.pdks.services.FileService;
 import com.proven.pdks.services.PDKSExportService;
 import com.proven.pdks.services.WorklogService;
-import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -21,6 +22,8 @@ import java.util.List;
 public class WorklogController {
     @Autowired
     private WorklogService worklogService;
+    @Autowired
+    private FileService fileService;
     @Autowired
     private PDKSExportService excelExportService;
 
@@ -47,13 +50,21 @@ public class WorklogController {
         }
         return worklogService.getReport(startDate,endDate,tckns);
     }
+
     @PreAuthorize("hasAuthority('ADMIN')")
     @GetMapping("/report/export")
-    public void exportWorklogReport(@RequestParam LocalDate startDate,
-                                    @RequestParam LocalDate endDate,
-                                    @RequestParam(required = false) List<String> tckns,
-                                    HttpServletResponse response) throws IOException {
+    public ResponseEntity<byte[]> exportWorklogReport(@RequestParam LocalDate startDate,
+                                              @RequestParam LocalDate endDate,
+                                              @RequestParam(required = false) List<String> tckns
+                                              ) throws IOException {
+        if(tckns == null){
+            tckns = new ArrayList<>();
+        }
         List<WorklogReportDTO> reports = worklogService.getReport(startDate, endDate, tckns);
-        excelExportService.exportWorklogReport(reports, response);
+        if(reports == null || reports.isEmpty()){
+            return ResponseEntity.noContent().build();
+        }
+        byte[] data = excelExportService.exportWorklogReport(reports);
+        return fileService.download(data, "report.xlsx");
     }
 }

@@ -1,18 +1,11 @@
 package com.proven.pdks.services;
 
 import com.proven.pdks.dtos.WorklogReportDTO;
-import jakarta.servlet.http.HttpServletResponse;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import org.springframework.core.io.ByteArrayResource;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
@@ -20,7 +13,8 @@ import java.util.List;
 
 @Service
 public class PDKSExportService {
-    public ResponseEntity<ByteArrayResource> exportWorklogReport(List<WorklogReportDTO> reports, HttpServletResponse response) throws IOException {
+
+    public byte[] exportWorklogReport(List<WorklogReportDTO> reports) throws IOException {
         Workbook workbook = new XSSFWorkbook();
         Sheet sheet = workbook.createSheet("Worklog Reports");
 
@@ -60,22 +54,18 @@ public class PDKSExportService {
         for (int i = 0; i < headers.length; i++) {
             sheet.autoSizeColumn(i);
         }
-
+        byte[] result = null;
         try {
-            File f = new File("test.xlsx");
-            FileOutputStream outputStream = new FileOutputStream("output.xlsx");
-            workbook.write(outputStream);
+            ByteArrayOutputStream stream = new ByteArrayOutputStream();
+            workbook.write(stream);
             workbook.close();
-            outputStream.close();
-
-            System.out.println("Excel file exported successfully!");
-
+            result = stream.toByteArray();
+            stream.close();
         }
         catch (Exception e) {
             e.printStackTrace();
         }
-
-        return ResponseEntity.ok().build();
+        return result;
     }
 
     private CellStyle getHeaderStyle(Workbook workbook) {
