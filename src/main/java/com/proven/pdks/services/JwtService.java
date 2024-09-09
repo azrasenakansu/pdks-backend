@@ -20,7 +20,12 @@ public class JwtService {
     public static final long HOUR = 3600 * 1000;
 
     public String extractUsername(String token) {
-        return extractClaim(token, Claims::getSubject);
+        try{
+            return extractClaim(token, Claims::getSubject);
+        }
+        catch (Exception e){
+            return null;
+        }
     }
 
     public Date extractExpiration(String token) {

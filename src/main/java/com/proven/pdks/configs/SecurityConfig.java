@@ -49,6 +49,7 @@ public class SecurityConfig {
                 .sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authenticationProvider())
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
+                .exceptionHandling(c -> c.authenticationEntryPoint(new Http401UnauthorizedEntryPoint()))
                 .build();
     }
 
