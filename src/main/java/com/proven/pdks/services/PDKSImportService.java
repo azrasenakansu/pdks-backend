@@ -1,12 +1,10 @@
 package com.proven.pdks.services;
 
 import com.proven.pdks.common.SimpleRows;
-import com.proven.pdks.entities.User;
 import com.proven.pdks.entities.Worklog;
 import com.proven.pdks.repositories.UserRepository;
 import com.proven.pdks.repositories.WorklogRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cglib.core.Local;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
@@ -15,7 +13,6 @@ import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 @Service
 public class PDKSImportService {
