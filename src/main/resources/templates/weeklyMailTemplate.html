@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Weekly Update</title>
+</head>
+<body>
+<h1>Weekly Update for <span th:text="${name}"></span></h1>
+<p>Here are your updates for the week:</p>
+<table>
+    <tr>
+        <th>Tarih</th>
+        <th>Çalışma Saati</th>
+    </tr>
+    <tr th:each="wl : ${worklogs}">
+        <td th:text="${wl.date}"></td>
+     <td th:text="${wl.getTotal_time()}"></td>
+    </tr>
+</table>
+</body>
+</html>
