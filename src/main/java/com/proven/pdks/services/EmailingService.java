@@ -1,7 +1,9 @@
 package com.proven.pdks.services;
 
+import com.proven.pdks.common.SimpleRows;
 import com.proven.pdks.dtos.WorklogReportDTO;
 import com.proven.pdks.entities.User;
+import com.proven.pdks.helpers.FormatterHelper;
 import com.proven.pdks.models.EmailModel;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
@@ -15,9 +17,12 @@ import org.springframework.stereotype.Service;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 
+import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.util.Calendar;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Locale;
 
 
 @Service
@@ -47,6 +52,7 @@ public class EmailingService {
             List<WorklogReportDTO> worklogs = worklogService.getReport(from, to, List.of(tckn));
             EmailModel emailDetails = new EmailModel();
             emailDetails.setWorklogs(worklogs);
+            emailDetails.calculateTotal();
             emailDetails.setReceiver(user.getEmail());
             emailDetails.setName(user.getName());
             emailDetails.setSubject("Haftalık PDKS Raporunuz");
@@ -57,7 +63,16 @@ public class EmailingService {
 
             Context context = new Context();
             context.setVariable("worklogs", emailDetails.getWorklogs());
-            context.setVariable("name",emailDetails.getName());
+            context.setVariable("name", emailDetails.getName().toUpperCase(FormatterHelper.locale));
+            context.setVariable("tckn",user.getTckn());
+            context.setVariable("startDate",worklogs.stream().min(Comparator.comparing(WorklogReportDTO::getDate)).map(WorklogReportDTO::getDate).orElse(from));
+            context.setVariable("endDate",worklogs.stream().max(Comparator.comparing(WorklogReportDTO::getDate)).map(WorklogReportDTO::getDate).orElse(to));
+
+            long hours = emailDetails.getTotalTime().toHours();
+            int minutes = emailDetails.getTotalTime().toMinutesPart();
+
+            String totalTimeText = FormatterHelper.formatter.format(hours) + ":" + FormatterHelper.formatter.format(minutes);
+            context.setVariable("totalTime", totalTimeText);
             String processedString = templateEngine.process("weeklyMailTemplate", context);
 
             messageHelper.setText(processedString,true);

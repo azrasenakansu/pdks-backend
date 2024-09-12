@@ -1,5 +1,7 @@
 package com.proven.pdks.dtos;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.proven.pdks.helpers.FormatterHelper;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -31,6 +33,10 @@ public class WorklogReportDTO {
             totalTime = totalTime.plusMinutes(ext_hours.getMinute()).plusHours(ext_hours.getHour());
         }
         this.total_time = totalTime;
-         return totalTime;
+        return totalTime;
+    }
+
+    public String getDateText(){
+        return FormatterHelper.dateFormatter.format(date);
     }
 }
