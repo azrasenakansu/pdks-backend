@@ -33,8 +33,9 @@ public class ReportRepositoryCustomImpl implements ReportRepository {
                 "ON report.tckn = users.tckn " +
                 "WHERE report.date BETWEEN ? AND ? " ;
         if (!tckns.isEmpty()) {
-            sql += " AND report.tckn IN (" + String.join(",", tckns.stream().map(t -> "?").toArray(String[]::new)) + ")";
+            sql += " AND report.tckn IN (" + String.join(",", tckns.stream().map(t -> "?").toArray(String[]::new)) + ") ";
         }
+        sql += "ORDER BY report.tckn, report.date";
 
         Object[] params = new Object[2 + tckns.size()];
         params[0] = startDate;
