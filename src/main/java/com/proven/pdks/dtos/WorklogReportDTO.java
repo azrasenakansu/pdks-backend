@@ -48,6 +48,7 @@ public class WorklogReportDTO {
         return totalTime;
     }
 
+    @JsonIgnore
     public String getDateText(){
         return FormatterHelper.dateFormatter.format(date);
     }

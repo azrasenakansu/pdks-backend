@@ -1,6 +1,5 @@
 package com.proven.pdks.services;
 
-import com.proven.pdks.common.SimpleRows;
 import com.proven.pdks.dtos.WorklogReportDTO;
 import com.proven.pdks.entities.User;
 import com.proven.pdks.helpers.FormatterHelper;
@@ -17,12 +16,10 @@ import org.springframework.stereotype.Service;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 
-import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.util.Calendar;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Locale;
 
 
 @Service
