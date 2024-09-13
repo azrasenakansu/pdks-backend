@@ -26,6 +26,7 @@ public class ExternalWorklog {
     @JoinColumn(name = "tckn", nullable = false)
     private User user;
 
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern="dd/MM/yyyy")
     private LocalDate date;
 
     @Column(name = "start_time")

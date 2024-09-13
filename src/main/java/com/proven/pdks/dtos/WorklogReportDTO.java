@@ -1,5 +1,6 @@
 package com.proven.pdks.dtos;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.proven.pdks.helpers.FormatterHelper;
 import lombok.AllArgsConstructor;
@@ -16,11 +17,22 @@ import java.time.temporal.ChronoUnit;
 public class WorklogReportDTO {
     private String name;
     private String tckn;
+
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern="dd/MM/yyyy")
     private LocalDate date;
+
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern="HH:mm")
     private LocalTime start_time;
+
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern="HH:mm")
     private LocalTime end_time;
+
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern="HH:mm")
     private LocalTime ext_hours;
+
     private String ext_descriptions;
+
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern="HH:mm")
     private LocalTime total_time;
 
     public LocalTime getTotal_time(){
