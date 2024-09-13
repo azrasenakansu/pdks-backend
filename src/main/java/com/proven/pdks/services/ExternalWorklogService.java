@@ -1,12 +1,12 @@
 package com.proven.pdks.services;
 
 import com.proven.pdks.entities.ExternalWorklog;
+import org.springframework.data.domain.Page;
 
-import java.util.List;
 import java.util.Optional;
 
 public interface ExternalWorklogService {
-    List<ExternalWorklog> getWorklogs(String tckn);
+    Page<ExternalWorklog> getWorklogs(String tckn, int page, int size);
 
     ExternalWorklog createWorklog(ExternalWorklog worklog);
 
@@ -16,10 +16,10 @@ public interface ExternalWorklogService {
 
     ExternalWorklog approveWorklog(Long id, Optional<Boolean> state);
 
-    List<ExternalWorklog> getAllPendingWorklogs();
+    Page<ExternalWorklog> getAllPendingWorklogs(int page, int size);
 
-    List<ExternalWorklog> getAllRejectedWorklogs();
+    Page<ExternalWorklog> getAllRejectedWorklogs(int page, int size);
 
-    List<ExternalWorklog> getAllApprovedWorklogs();
+    Page<ExternalWorklog> getAllApprovedWorklogs(int page, int size);
 }
 

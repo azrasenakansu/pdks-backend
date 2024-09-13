@@ -1,17 +1,17 @@
 package com.proven.pdks.repositories;
 
 import com.proven.pdks.entities.ExternalWorklog;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import java.util.List;
-
 public interface ExternalWorklogRepository extends JpaRepository<ExternalWorklog, Long> {
-    List<ExternalWorklog> findByIsApprovedNull();
+    Page<ExternalWorklog> findByIsApprovedNullOrderByDateDesc(Pageable pageable);
 
-    List<ExternalWorklog> findByUser_Tckn(String tckn);
+    Page<ExternalWorklog> findByUser_TcknOrderByDateDesc(String tckn, Pageable pageable);
 
-    List<ExternalWorklog> findByIsApprovedFalse();
+    Page<ExternalWorklog> findByIsApprovedFalseOrderByDateDesc(Pageable pageable);
 
-    List<ExternalWorklog> findByIsApprovedTrue();
+    Page<ExternalWorklog> findByIsApprovedTrueOrderByDateDesc(Pageable pageable);
 
 }

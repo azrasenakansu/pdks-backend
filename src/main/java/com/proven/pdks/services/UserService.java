@@ -1,6 +1,7 @@
 package com.proven.pdks.services;
 
 import com.proven.pdks.entities.User;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -11,7 +12,7 @@ public interface UserService {
 
     User findByTCKN(String tckn);
 
-    List<User> getAllUsers();
+    Page<User> getAllUsers(int page, int size);
 
     List<User> saveUsers(List<User> users);
 

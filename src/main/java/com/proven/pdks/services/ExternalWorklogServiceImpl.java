@@ -5,27 +5,25 @@ import com.proven.pdks.exceptionHandling.WillfullException;
 import com.proven.pdks.repositories.ExternalWorklogRepository;
 import com.proven.pdks.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.Optional;
 
 @Service
 public class ExternalWorklogServiceImpl implements ExternalWorklogService {
     private final ExternalWorklogRepository externalWorklogRepository;
 
-    private final UserRepository userRepository;
-
     @Autowired
-    public ExternalWorklogServiceImpl(ExternalWorklogRepository externalWorklogRepository, UserRepository userRepository) {
+    public ExternalWorklogServiceImpl(ExternalWorklogRepository externalWorklogRepository) {
         this.externalWorklogRepository = externalWorklogRepository;
-        this.userRepository = userRepository;
     }
 
     @Override
-    public List<ExternalWorklog> getWorklogs(String tckn) {
-        return externalWorklogRepository.findByUser_Tckn(tckn);
+    public Page<ExternalWorklog> getWorklogs(String tckn, int page, int size) {
+        return externalWorklogRepository.findByUser_TcknOrderByDateDesc(tckn, PageRequest.of(page,size));
     }
 
     public ExternalWorklog createWorklog(ExternalWorklog worklog) {
@@ -73,16 +71,16 @@ public class ExternalWorklogServiceImpl implements ExternalWorklogService {
         }
     }
 
-    public List<ExternalWorklog> getAllPendingWorklogs() {
-        return externalWorklogRepository.findByIsApprovedNull();
+    public Page<ExternalWorklog> getAllPendingWorklogs(int page, int size) {
+        return externalWorklogRepository.findByIsApprovedNullOrderByDateDesc(PageRequest.of(page,size));
     }
 
-    public List<ExternalWorklog> getAllRejectedWorklogs() {
-        return externalWorklogRepository.findByIsApprovedFalse();
+    public Page<ExternalWorklog> getAllRejectedWorklogs(int page, int size) {
+        return externalWorklogRepository.findByIsApprovedFalseOrderByDateDesc(PageRequest.of(page,size));
     }
 
-    public List<ExternalWorklog> getAllApprovedWorklogs() {
-        return externalWorklogRepository.findByIsApprovedTrue();
+    public Page<ExternalWorklog> getAllApprovedWorklogs(int page, int size) {
+        return externalWorklogRepository.findByIsApprovedTrueOrderByDateDesc(PageRequest.of(page,size));
     }
 
 }
