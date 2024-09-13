@@ -3,7 +3,6 @@ package com.proven.pdks.services;
 import com.proven.pdks.entities.ExternalWorklog;
 import com.proven.pdks.exceptionHandling.WillfullException;
 import com.proven.pdks.repositories.ExternalWorklogRepository;
-import com.proven.pdks.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
