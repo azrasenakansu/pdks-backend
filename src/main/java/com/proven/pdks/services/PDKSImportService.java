@@ -10,10 +10,7 @@ import org.springframework.stereotype.Service;
 
 import java.sql.Date;
 import java.time.LocalDate;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 public class PDKSImportService {
@@ -41,12 +38,15 @@ public class PDKSImportService {
         return map;
     }
 
+
     public void importPDKS(List<SimpleRows> rows){
         Map<String, LocalDate> importMap = userLastImportMap();
+        LocalDate now = LocalDate.now();
         LocalDate max = rows.stream().max(Comparator.comparing(SimpleRows::getDate)).map(SimpleRows::getDate).orElse(LocalDate.now());
+        boolean bypassMaxControl = !max.getMonth().equals(now.getMonth());
         System.err.println("Raw data count: " + rows.size());
         rows = rows.stream().filter(row -> importMap.containsKey(row.getTckn()) &&
-                row.getDate().isBefore(max) && (importMap.get(row.getTckn()) == null || row.getDate().isAfter(importMap.get(row.getTckn())))).toList();
+                (row.getDate().isBefore(max) || bypassMaxControl) && (importMap.get(row.getTckn()) == null || row.getDate().isAfter(importMap.get(row.getTckn())))).toList();
         System.err.println("Filtered data count: " + rows.size());
 
         Map<String, Map<LocalDate, Worklog>> result = new HashMap<>();
