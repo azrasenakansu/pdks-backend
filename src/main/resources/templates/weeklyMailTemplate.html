@@ -4,30 +4,32 @@
     <title>Weekly Update</title>
 </head>
 <body>
-<h1><span th:text="${name}"></span>, Haftalık PDKS Raporunuz:</h1>
-<p><span>GÜN - GÜN AY</span> tarihlerine ait giriş-çıkış kayıtlarınız tabolda yer almaktadır:</p>
-<table style="border-collapse: collapse; border: 1px solid black; width: 600px" align="left">
-    <tr style="border: 2px solid black;"  align="left" >
-        <th style="border: 2px solid black;" align="center" colspan="1" bgcolor= "#cfe1fe">Ad Soyad - TCKN</th>
-        <th colspan="4" align= "left">&nbsp; <span th:text="${name} + ' - ' + ${tckn}"></span></th>
+<p>Merhaba&nbsp;<span th:text="${name}"></span>,</p>
+<p><span th:text="${betweenText}"></span> tarihlerine ait giriş-çıkış kayıtlarınız tabloda yer almaktadır.</p>
+<p>İlgili kayıtların kontrolünü rica ederiz.</p>
+<p>İyi çalışmalar.</p>
+<table style="border-collapse: collapse; border: 1px solid black; width: 600px; align: left" align="left">
+    <tr style="border: 2px solid black; align: left"  align="left" >
+        <th style="border: 2px solid black; align: center" align="center" colspan="1" bgcolor= "#cfe1fe">Ad Soyad - TCKN</th>
+        <th style="align: left" colspan="4" align= "left">&nbsp; <span th:text="${name} + ' - ' + ${tckn}"></span></th>
     </tr>
-    <tr align="center" style="border: 2px solid black;" bgcolor= "#cfe1fe">
+    <tr align="center" style="border: 2px solid black; align: center" bgcolor= "#cfe1fe">
         <th style="border: 2px solid black;">Tarih</th>
         <th style="border: 2px solid black; width: 100px">Giriş</th>
         <th style="border: 2px solid black; width: 100px">Çıkış</th>
         <th style="border: 2px solid black; width: 100px">Ek Çalışma</th>
         <th style="border: 2px solid black; width: 100px">Toplam Çalışma Saati</th>
     </tr>
-    <tr align="center" style="border: 2px solid black;" th:each="wl : ${worklogs}">
+    <tr align="center" style="border: 2px solid black; align:center" th:each="wl : ${worklogs}">
         <td style="border: 2px solid black;" th:text="${wl.getDateText()}"></td>
         <td style="border: 2px solid black;" th:text="${wl.start_time}"></td>
         <td style="border: 2px solid black;" th:text="${wl.end_time}"></td>
         <td style="border: 2px solid black;" th:text="${wl.ext_hours}"></td>
         <td style="border: 2px solid black;" th:text="${wl.getTotal_time()}"></td>
     </tr>
-    <tr style="border: 2px solid black;" bgcolor= "#cfe1fe" align="left">
-        <th colspan="4" style="border: 2px solid black;" align="right">Toplam &nbsp;</th>
-        <th colspan="1" align= "center" th:text="${totalTime}"></th>
+    <tr style="border: 2px solid black;" bgcolor= "#cfe1fe">
+        <th colspan="4" style="border: 2px solid black; align: right" align="right">Toplam &nbsp;</th>
+        <th colspan="1" style="align: center" align= "center" th:text="${totalTime}"></th>
     </tr>
 </table>
 </body>

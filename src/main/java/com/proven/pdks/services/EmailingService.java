@@ -52,7 +52,11 @@ public class EmailingService {
             emailDetails.calculateTotal();
             emailDetails.setReceiver(user.getEmail());
             emailDetails.setName(user.getName());
-            emailDetails.setSubject("Haftalık PDKS Raporunuz");
+
+            int startDay = worklogs.stream().min(Comparator.comparing(WorklogReportDTO::getDate)).map(WorklogReportDTO::getDate).orElse(from).getDayOfMonth();
+            int endDay = worklogs.stream().max(Comparator.comparing(WorklogReportDTO::getDate)).map(WorklogReportDTO::getDate).orElse(to).getDayOfMonth();
+            String betweenText = startDay + "-" + endDay + " " + FormatterHelper.textifyMonth(now.getMonth());
+            emailDetails.setSubject(betweenText + " Çalışma Saatleri hk.");
 
             messageHelper.setFrom(senderMail);
             messageHelper.setTo(emailDetails.getReceiver());
@@ -62,8 +66,7 @@ public class EmailingService {
             context.setVariable("worklogs", emailDetails.getWorklogs());
             context.setVariable("name", emailDetails.getName().toUpperCase(FormatterHelper.locale));
             context.setVariable("tckn",user.getTckn());
-            context.setVariable("startDate",worklogs.stream().min(Comparator.comparing(WorklogReportDTO::getDate)).map(WorklogReportDTO::getDate).orElse(from));
-            context.setVariable("endDate",worklogs.stream().max(Comparator.comparing(WorklogReportDTO::getDate)).map(WorklogReportDTO::getDate).orElse(to));
+            context.setVariable("betweenText",betweenText);
 
             long hours = emailDetails.getTotalTime().toHours();
             int minutes = emailDetails.getTotalTime().toMinutesPart();
