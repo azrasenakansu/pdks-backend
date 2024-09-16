@@ -35,7 +35,7 @@ public class ReportRepositoryCustomImpl implements ReportRepository {
         if (!tckns.isEmpty()) {
             sql += " AND report.tckn IN (" + String.join(",", tckns.stream().map(t -> "?").toArray(String[]::new)) + ") ";
         }
-        sql += "ORDER BY report.tckn, report.date";
+        sql += "ORDER BY users.name, report.date";
 
         Object[] params = new Object[2 + tckns.size()];
         params[0] = startDate;

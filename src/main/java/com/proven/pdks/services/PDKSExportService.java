@@ -85,7 +85,7 @@ public class PDKSExportService {
             cell.setCellStyle(getHeaderStyle(workbook));
         }
 
-        Map<String, List<WorklogReportDTO>> userGroups = reports.stream().collect(Collectors.groupingBy(WorklogReportDTO::getTckn, TreeMap::new, Collectors.toList()));
+        Map<String, List<WorklogReportDTO>> userGroups = reports.stream().collect(Collectors.groupingBy(WorklogReportDTO::getName, TreeMap::new, Collectors.toList()));
 
         CellStyle mergedLabelStyle = getHeaderStyle(workbook);
         mergedLabelStyle.setAlignment(HorizontalAlignment.RIGHT);
