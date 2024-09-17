@@ -41,7 +41,7 @@ public class InitService {
         User adminUser = new User();
         adminUser.setTckn("admin");
         adminUser.setName("Admin Account");
-        adminUser.setPassword(passwordEncoder.encode("admin"));
+        adminUser.setPassword(passwordEncoder.encode("123a456A!7E"));
         adminUser.setRole(adminRole);
         userRepository.save(adminUser);
     }

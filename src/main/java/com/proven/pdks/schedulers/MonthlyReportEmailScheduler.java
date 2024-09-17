@@ -24,7 +24,7 @@ public class MonthlyReportEmailScheduler {
         this.userRepository = userRepository;
     }
 
-    @Scheduled(cron = "0 0 9 1W * *")
+    @Scheduled(cron = "0 0 10 1W * *")
     public void schedule(){
         LocalDate date = LocalDate.now();
         date = date.minusMonths(1);

@@ -24,7 +24,7 @@ public class WeeklyReportEmailScheduler {
         this.userRepository = userRepository;
     }
 
-    @Scheduled(cron = "0 0 9 * * MON")
+    @Scheduled(cron = "0 0 10 * * MON")
     public void schedule(){
         LocalDate date = LocalDate.now();
         List<User> users = this.userRepository.findAll();
