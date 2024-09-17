@@ -4,6 +4,7 @@ import com.proven.pdks.dtos.WorklogReportDTO;
 import com.proven.pdks.entities.User;
 import com.proven.pdks.helpers.FormatterHelper;
 import com.proven.pdks.models.EmailModel;
+import com.proven.pdks.repositories.UserRepository;
 import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -26,10 +27,21 @@ public class EmailingService {
     private final JavaMailSender mailSender;
     private final TemplateEngine templateEngine;
     private final WorklogService worklogService;
-    private final UserService userService;
+    private final UserRepository userRepository;
 
-    @Value("${spring.mail.username}")
-    private String senderMail;
+    @Value("${spring.mail.fromName}")
+    private String fromName;
+
+    @Value("${spring.mail.fromAddress}")
+    private String fromAddress;
+
+    @Async
+    public void sendReportMail(String tckn, LocalDate date) {
+        User user = userRepository.findByTckn(tckn);
+        if(user != null){
+            sendReportMail(user, date);
+        }
+    }
 
     @Async
     public void sendReportMail(User user, LocalDate date){
@@ -54,7 +66,7 @@ public class EmailingService {
             String betweenText = startDay + "-" + endDay + " " + FormatterHelper.textifyMonth(date.getMonth());
             emailDetails.setSubject(betweenText + " Çalışma Saatleri hk.");
 
-            messageHelper.setFrom(senderMail);
+            messageHelper.setFrom(fromAddress, fromName);
             messageHelper.setTo(emailDetails.getReceiver());
             messageHelper.setSubject(emailDetails.getSubject());
 
