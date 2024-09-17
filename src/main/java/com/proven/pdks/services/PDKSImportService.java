@@ -39,8 +39,12 @@ public class PDKSImportService {
         return map;
     }
 
-    private String worklogToKey(Worklog worklog){
+    private String toKey(Worklog worklog){
         return worklog.getUser().getTckn() + "_" + worklog.getDate().toString();
+    }
+
+    private String toKey(SimpleRows row){
+        return row.getTckn() + "_" + row.getDate().toString();
     }
 
 
@@ -54,46 +58,46 @@ public class PDKSImportService {
                 (row.getDate().isBefore(max) || bypassMaxControl) && (importMap.get(row.getTckn()) == null || row.getDate().isAfter(importMap.get(row.getTckn())))).toList();
         System.err.println("Filtered data count: " + rows.size());
 
-        Map<String, Map<LocalDate, Worklog>> result = new HashMap<>();
+        Map<String, Worklog> worklogs = new HashMap<>();
         Map<String, Stack<SubWorklog>> subWorklogs = new HashMap<>();
         for (SimpleRows row : rows) {
-            if (!result.containsKey(row.getTckn())) {
-                result.put(row.getTckn(), new HashMap<>());
-            }
-
-            Map<LocalDate, Worklog> dateLogs = result.get(row.getTckn());
-            if (!dateLogs.containsKey(row.getDate())) {
+            String key = toKey(row);
+            if(!worklogs.containsKey(key)){
                 Worklog temp = new Worklog();
                 temp.setUser(userRepository.findByTckn(row.getTckn()));
                 temp.setDate(row.getDate());
-                dateLogs.put(row.getDate(), temp);
-                subWorklogs.put(worklogToKey(temp), new Stack<>());
+                worklogs.put(key, temp);
+                subWorklogs.put(key, new Stack<>());
             }
 
-            Worklog worklog = dateLogs.get(row.getDate());
-            Stack<SubWorklog> parts = subWorklogs.get(worklogToKey(worklog));
+            Worklog worklog = worklogs.get(key);
+            Stack<SubWorklog> stack = subWorklogs.get(key);
             if (row.isFrom()) {
                 if (worklog.getFrom() == null || row.getTime().isBefore(worklog.getFrom())) {
                     worklog.setFrom(row.getTime());
                 }
                 SubWorklog sub = new SubWorklog();
                 sub.setFrom(row.getTime());
-                //sub.setWorklog(worklog);
-                parts.push(sub);
+                stack.push(sub);
             } else {
                 if (worklog.getTo() == null || row.getTime().isAfter(worklog.getFrom())) {
                     worklog.setTo(row.getTime());
                 }
-                if(!parts.empty()){
-                    parts.peek().setTo(row.getTime());
+                if(!stack.empty() && stack.peek().getTo() == null){
+                    stack.peek().setTo(row.getTime());
+                }
+                else{
+                    SubWorklog sub = new SubWorklog();
+                    sub.setTo(row.getTime());
+                    stack.push(sub);
                 }
             }
         }
-        List<Worklog> worklogs = result.values().stream().flatMap(q -> q.values().stream())
-                .peek(w -> w.setParts(subWorklogs.get(worklogToKey(w)).stream().filter(q -> q.getFrom() != null && q.getTo() != null).toList()))
+        List<Worklog> result = worklogs.values().stream()
+                .peek(w -> w.setParts(subWorklogs.get(toKey(w)).stream().toList()))
                 .sorted(Comparator.comparing(Worklog::getDate))
                 .toList();
-        worklogRepository.saveAllAndFlush(worklogs);
+        worklogRepository.saveAllAndFlush(result);
         System.err.println("Imported worklog count: " + worklogs.size());
     }
 

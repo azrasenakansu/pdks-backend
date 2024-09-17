@@ -3,6 +3,7 @@ package com.proven.pdks.services;
 import com.proven.pdks.dtos.WorklogReportDTO;
 import com.proven.pdks.entities.Worklog;
 import com.proven.pdks.repositories.ReportRepository;
+import com.proven.pdks.repositories.SubWorklogRepository;
 import com.proven.pdks.repositories.WorklogRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -14,11 +15,13 @@ import java.util.List;
 public class WorklogServiceImpl implements WorklogService {
     private final WorklogRepository worklogRepository;
     private final ReportRepository reportRepository;
+    private final SubWorklogRepository subWorklogRepository;
 
     @Autowired
-    public WorklogServiceImpl(WorklogRepository worklogRepository, ReportRepository reportRepository) {
+    public WorklogServiceImpl(WorklogRepository worklogRepository, ReportRepository reportRepository, SubWorklogRepository subWorklogRepository) {
         this.worklogRepository = worklogRepository;
         this.reportRepository = reportRepository;
+        this.subWorklogRepository = subWorklogRepository;
     }
 
     @Override
@@ -28,8 +31,11 @@ public class WorklogServiceImpl implements WorklogService {
 
     @Override
     public List<WorklogReportDTO> getReport(LocalDate startDate, LocalDate endDate, List<String> tckns) {
-        List<WorklogReportDTO> reports =reportRepository.getReport(startDate, endDate, tckns);
+        List<WorklogReportDTO> reports = reportRepository.getReport(startDate, endDate, tckns);
         for (WorklogReportDTO reportDTO:reports){
+            if(reportDTO.getWid() != null){
+                reportDTO.setParts(subWorklogRepository.findByWorklogId(reportDTO.getWid()));
+            }
             reportDTO.getTotal_time();
         }
         return reports;

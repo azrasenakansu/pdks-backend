@@ -23,7 +23,7 @@ public class ReportRepositoryCustomImpl implements ReportRepository {
     public List<WorklogReportDTO> getReport(LocalDate startDate, LocalDate endDate, List<String> tckns) {
         String sql = "SELECT users.name,report.* FROM users " +
                 "INNER JOIN (" +
-                "SELECT COALESCE(wrk.tckn,ext.tckn) as tckn, COALESCE(wrk.date,ext.date) as date, wrk.start_time, wrk.end_time, ext.ext_hours, ext.ext_descriptions FROM worklogs AS wrk " +
+                "SELECT COALESCE(wrk.tckn,ext.tckn) as tckn, COALESCE(wrk.date,ext.date) as date, wrk.id as wid, wrk.start_time, wrk.end_time, ext.ext_hours, ext.ext_descriptions FROM worklogs AS wrk " +
                 "FULL JOIN " +
                 "(SELECT date,tckn, SUM(end_time-start_time) as ext_hours , STRING_AGG(description,'-$-') as ext_descriptions FROM external_worklogs " +
                 "WHERE is_approved = TRUE " +

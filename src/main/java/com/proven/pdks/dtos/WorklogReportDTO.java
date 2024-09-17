@@ -2,6 +2,7 @@ package com.proven.pdks.dtos;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.proven.pdks.entities.SubWorklog;
 import com.proven.pdks.helpers.FormatterHelper;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -10,6 +11,8 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -17,6 +20,8 @@ import java.time.temporal.ChronoUnit;
 public class WorklogReportDTO {
     private String name;
     private String tckn;
+
+    private Long wid;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern="dd/MM/yyyy")
     private LocalDate date;
@@ -56,4 +61,6 @@ public class WorklogReportDTO {
     public String getUniqueName(){
         return this.name + "_" + this.tckn;
     }
+
+    public List<SubWorklog> parts = new ArrayList<>();
 }
