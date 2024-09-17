@@ -52,4 +52,8 @@ public class WorklogReportDTO {
     public String getDateText(){
         return FormatterHelper.dateFormatter.format(date);
     }
+
+    public String getUniqueName(){
+        return this.name + "_" + this.tckn;
+    }
 }
