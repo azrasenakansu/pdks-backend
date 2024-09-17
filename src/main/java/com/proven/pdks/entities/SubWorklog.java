@@ -1,46 +1,33 @@
 package com.proven.pdks.entities;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "worklogs")
+@Table(name = "sub_worklogs")
 @Builder
-public class Worklog {
-
+public class SubWorklog {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "tckn", nullable = false)
-    private User user;
-
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern="dd/MM/yyyy")
-    private LocalDate date;
+    @Column(name = "worklog_id")
+    private Long worklog_id;
 
     @Column(name = "start_time" )
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern="HH:mm")
     private LocalTime from;
 
-    @Column(name = "end_time")
+    @Column(name = "end_time" )
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern="HH:mm")
     private LocalTime to;
-
-    @JoinColumn(name = "worklog_id")
-    @OneToMany(targetEntity = SubWorklog.class, cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<SubWorklog> parts = new ArrayList<>();
 }
