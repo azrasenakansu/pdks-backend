@@ -21,9 +21,18 @@ import java.util.stream.Collectors;
 public class PDKSExportService {
     private static final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
-    private int createReportTable(Sheet sheet, int rowIndex, CellStyle mergedLabelStyle, CellStyle mergedValueStyle, List<WorklogReportDTO> userReport){
+    private static final String[] headers = {"TC Kimlik Numarası", "Adı Soyadı", "Tarih", "Başlangıç - Bitiş Saati", "Ek Çalışma Saati", "Açıklama", "Toplam Çalışma Saati"};
+
+    private void createReportSheet(Workbook workbook, CellStyle mergedLabelStyle, CellStyle mergedValueStyle, List<WorklogReportDTO> userReport){
         if(userReport == null || userReport.isEmpty()){
-            return rowIndex;
+            return;
+        }
+        Sheet sheet = workbook.createSheet(userReport.getFirst().getUniqueName());
+        Row headerRow = sheet.createRow(0);
+        for (int i = 0; i < headers.length; i++) {
+            Cell cell = headerRow.createCell(i);
+            cell.setCellValue(headers[i]);
+            cell.setCellStyle(mergedValueStyle);
         }
 
         Duration totalTime = userReport.stream().map(WorklogReportDTO::getTotal_time).reduce(Duration.ofHours(0), (accDuration, x) -> {
@@ -34,7 +43,7 @@ public class PDKSExportService {
         String totalTimeText = FormatterHelper.formatter.format(totalTime.toHours()) + ":" + FormatterHelper.formatter.format(totalTime.toMinutesPart());
 
         for (int i = 0; i < userReport.size(); i++) {
-            Row row = sheet.createRow(rowIndex+i);
+            Row row = sheet.createRow(i+1);
             WorklogReportDTO report = userReport.get(i);
 
             row.createCell(0).setCellValue(report.getTckn());
@@ -57,7 +66,7 @@ public class PDKSExportService {
             }
         }
 
-        int indexForTotalRow = rowIndex+userReport.size();
+        int indexForTotalRow = 1 + userReport.size();
         Row row = sheet.createRow(indexForTotalRow);
 
         Cell labelTotalCell = row.createCell(0);
@@ -70,34 +79,22 @@ public class PDKSExportService {
 
         sheet.addMergedRegion(new CellRangeAddress(indexForTotalRow, indexForTotalRow, 0,5));
 
-        return rowIndex + userReport.size() + 1;
+        for (int i = 0; i < headers.length; i++) {
+            sheet.autoSizeColumn(i);
+        }
     }
 
     public byte[] exportWorklogReport(List<WorklogReportDTO> reports) throws IOException {
         Workbook workbook = new XSSFWorkbook();
-        Sheet sheet = workbook.createSheet("Worklog Reports");
-
-        Row headerRow = sheet.createRow(0);
-        String[] headers = {"TC Kimlik Numarası", "Adı Soyadı", "Tarih", "Başlangıç - Bitiş Saati", "Ek Çalışma Saati", "Açıklama", "Toplam Çalışma Saati"};
-        for (int i = 0; i < headers.length; i++) {
-            Cell cell = headerRow.createCell(i);
-            cell.setCellValue(headers[i]);
-            cell.setCellStyle(getHeaderStyle(workbook));
-        }
-
-        Map<String, List<WorklogReportDTO>> userGroups = reports.stream().collect(Collectors.groupingBy(WorklogReportDTO::getName, TreeMap::new, Collectors.toList()));
-
         CellStyle mergedLabelStyle = getHeaderStyle(workbook);
         mergedLabelStyle.setAlignment(HorizontalAlignment.RIGHT);
         CellStyle mergedValueStyle = getHeaderStyle(workbook);
-        int rowIndex = 1;
+
+        Map<String, List<WorklogReportDTO>> userGroups = reports.stream().collect(Collectors.groupingBy(WorklogReportDTO::getUniqueName, TreeMap::new, Collectors.toList()));
         for(List<WorklogReportDTO> data : userGroups.values()){
-            rowIndex = createReportTable(sheet, rowIndex,mergedLabelStyle, mergedValueStyle, data);
+            createReportSheet(workbook, mergedLabelStyle, mergedValueStyle, data);
         }
 
-        for (int i = 0; i < headers.length; i++) {
-            sheet.autoSizeColumn(i);
-        }
         byte[] result = null;
         try {
             ByteArrayOutputStream stream = new ByteArrayOutputStream();
